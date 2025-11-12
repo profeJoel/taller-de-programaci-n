@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gráfico de Dispersión - D3.js</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <h2>Gráfico de Dispersión (Datos simulados)</h2>
+  <svg width="600" height="400"></svg>
+  <script>
+    const data = Array.from({length: 30}, () => ({
+      x: Math.random() * 100,
+      y: Math.random() * 100
+    }));
+
+    const svg = d3.select("svg"),
+          width = +svg.attr("width"),
+          height = +svg.attr("height"),
+          margin = 40;
+
+    const x = d3.scaleLinear().domain([0, 100]).range([margin, width - margin]);
+    const y = d3.scaleLinear().domain([0, 100]).range([height - margin, margin]);
+
+    svg.append("g").attr("transform", `translate(0,${height - margin})`).call(d3.axisBottom(x));
+    svg.append("g").attr("transform", `translate(${margin},0)`).call(d3.axisLeft(y));
+
+    svg.selectAll("circle")
+       .data(data)
+       .enter()
+       .append("circle")
+       .attr("cx", d => x(d.x))
+       .attr("cy", d => y(d.y))
+       .attr("r", 5)
+       .attr("fill", "steelblue");
+  </script>
+</body>
+</html>

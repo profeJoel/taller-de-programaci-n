@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gráfico de Línea - D3.js</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 40px;
+    }
+    svg {
+      background: #f9f9f9;
+    }
+    .line {
+      fill: none;
+      stroke: steelblue;
+      stroke-width: 2;
+    }
+  </style>
+</head>
+<body>
+  <h2>Gráfico de Línea Simple con D3.js</h2>
+  <svg width="700" height="400"></svg>
+
+  <script>
+    const datos = [
+      { fecha: new Date(2023, 0, 1), valor: 30 },
+      { fecha: new Date(2023, 1, 1), valor: 50 },
+      { fecha: new Date(2023, 2, 1), valor: 40 },
+      { fecha: new Date(2023, 3, 1), valor: 60 },
+      { fecha: new Date(2023, 4, 1), valor: 80 },
+      { fecha: new Date(2023, 5, 1), valor: 70 },
+    ];
+
+    const svg = d3.select("svg"),
+          margin = { top: 20, right: 30, bottom: 50, left: 60 },
+          width = +svg.attr("width") - margin.left - margin.right,
+          height = +svg.attr("height") - margin.top - margin.bottom;
+
+    const g = svg.append("g")
+                 .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const x = d3.scaleTime()
+                .domain(d3.extent(datos, d => d.fecha))
+                .range([0, width]);
+
+    const y = d3.scaleLinear()
+                .domain([0, d3.max(datos, d => d.valor)])
+                .range([height, 0]);
+
+    g.append("g")
+     .attr("transform", `translate(0,${height})`)
+     .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%b")));
+
+    g.append("g")
+     .call(d3.axisLeft(y));
+
+    const line = d3.line()
+                   .x(d => x(d.fecha))
+                   .y(d => y(d.valor));
+
+    g.append("path")
+     .datum(datos)
+     .attr("class", "line")
+     .attr("d", line);
+  </script>
+</body>
+</html>

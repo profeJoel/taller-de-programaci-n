@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gráfico de Barras - D3.js</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    .bar { fill: steelblue; }
+  </style>
+</head>
+<body>
+  <h2>Gráfico de Barras desde PHP + MySQL</h2>
+  <svg width="600" height="400"></svg>
+
+  <script>
+    fetch("data.php")
+      .then(res => res.json())
+      .then(data => {
+        const svg = d3.select("svg");
+        const margin = { top: 20, right: 20, bottom: 40, left: 50 };
+        const width = +svg.attr("width") - margin.left - margin.right;
+        const height = +svg.attr("height") - margin.top - margin.bottom;
+
+        const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+        const x = d3.scaleBand()
+                    .domain(data.map(d => d.categoria))
+                    .range([0, width])
+                    .padding(0.1);
+
+        const y = d3.scaleLinear()
+                    .domain([0, d3.max(data, d => d.total)])
+                    .nice()
+                    .range([height, 0]);
+
+        g.append("g")
+         .attr("transform", `translate(0,${height})`)
+         .call(d3.axisBottom(x));
+
+        g.append("g").call(d3.axisLeft(y));
+
+        g.selectAll(".bar")
+         .data(data)
+         .enter().append("rect")
+         .attr("class", "bar")
+         .attr("x", d => x(d.categoria))
+         .attr("y", d => y(d.total))
+         .attr("width", x.bandwidth())
+         .attr("height", d => height - y(d.total));
+      });
+  </script>
+</body>
+</html>

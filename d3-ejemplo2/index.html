@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Consultas por Estado</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .bar { fill: steelblue; }
+        .bar:hover { fill: orange; }
+        .axis-label { font-size: 14px; }
+    </style>
+</head>
+<body>
+    <h2>Consultas Ciudadanas por Estado</h2>
+    <svg width="600" height="400"></svg>
+
+    <script>
+        fetch('data.php')
+            .then(response => response.json())
+            .then(data => {
+                const svg = d3.select("svg"),
+                      width = +svg.attr("width"),
+                      height = +svg.attr("height"),
+                      margin = {top: 20, right: 30, bottom: 40, left: 40};
+
+                const x = d3.scaleBand()
+                    .domain(data.map(d => d.estado))
+                    .range([margin.left, width - margin.right])
+                    .padding(0.2);
+
+                const y = d3.scaleLinear()
+                    .domain([0, d3.max(data, d => +d.cantidad)]).nice()
+                    .range([height - margin.bottom, margin.top]);
+
+                svg.append("g")
+                    .selectAll("rect")
+                    .data(data)
+                    .enter().append("rect")
+                        .attr("class", "bar")
+                        .attr("x", d => x(d.estado))
+                        .attr("y", d => y(d.cantidad))
+                        .attr("height", d => y(0) - y(d.cantidad))
+                        .attr("width", x.bandwidth());
+
+                svg.append("g")
+                    .attr("transform", `translate(0,${height - margin.bottom})`)
+                    .call(d3.axisBottom(x))
+                    .attr("font-size", "12px");
+
+                svg.append("g")
+                    .attr("transform", `translate(${margin.left},0)`)
+                    .call(d3.axisLeft(y))
+                    .attr("font-size", "12px");
+            });
+    </script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gráfico de Torta - D3.js</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <h2>Gráfico de Torta desde PHP + MySQL</h2>
+  <svg width="500" height="500"></svg>
+  <script>
+    fetch("data.php")
+      .then(res => res.json())
+      .then(data => {
+        const width = 500, height = 500, radius = Math.min(width, height) / 2;
+
+        const svg = d3.select("svg")
+                      .append("g")
+                      .attr("transform", `translate(${width / 2},${height / 2})`);
+
+        const color = d3.scaleOrdinal(d3.schemeCategory10);
+        const pie = d3.pie().value(d => d.total);
+        const arc = d3.arc().innerRadius(0).outerRadius(radius);
+
+        const arcs = svg.selectAll("arc")
+                        .data(pie(data))
+                        .enter()
+                        .append("g");
+
+        arcs.append("path")
+            .attr("d", arc)
+            .attr("fill", d => color(d.data.categoria));
+
+        arcs.append("text")
+            .attr("transform", d => `translate(${arc.centroid(d)})`)
+            .attr("text-anchor", "middle")
+            .text(d => d.data.categoria);
+      });
+  </script>
+</body>
+</html>
