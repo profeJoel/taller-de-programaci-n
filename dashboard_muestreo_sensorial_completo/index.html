@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Sensorial</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    .chart-container { margin-bottom: 30px; }
+    svg { background-color: #f8f9fa; border: 1px solid #ccc; }
+  </style>
+</head>
+<body class="container py-4">
+  <h1 class="mb-4">Dashboard Monitoreo Ambiental</h1>
+
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <label for="fecha">Fecha:</label>
+      <input type="date" id="fecha" class="form-control">
+    </div>
+    <div class="col-md-4">
+      <label for="comuna">Comuna:</label>
+      <select id="comuna" class="form-control">
+        <option value="">Todas</option>
+        <option value="Cochamó">Cochamó</option>
+        <option value="Maullín">Maullín</option>
+        <option value="Osorno">Osorno</option>
+      </select>
+    </div>
+    <div class="col-md-4 d-flex align-items-end">
+      <button class="btn btn-primary w-100" onclick="cargarDatos()">Filtrar</button>
+    </div>
+  </div>
+
+  <div id="graficos">
+    <div class="chart-container"><h5>Temperatura promedio (línea)</h5><svg id="graf_linea" width="600" height="300"></svg></div>
+    <div class="chart-container"><h5>Distribución pH (barras)</h5><svg id="graf_barras" width="600" height="300"></svg></div>
+    <div class="chart-container"><h5>Distribución por Turbidez (dona)</h5><svg id="graf_dona" width="600" height="300"></svg></div>
+    <div class="chart-container"><h5>Caudal vs Oxígeno Disuelto (dispersión)</h5><svg id="graf_puntos" width="600" height="300"></svg></div>
+  </div>
+
+  <button class="btn btn-success mt-4 me-2" onclick="descargarSVGs()">Descargar SVG</button>
+  <button class="btn btn-info mt-4 me-2" onclick="descargarPNGs()">Descargar PNG</button>
+  <button class="btn btn-secondary mt-4" onclick="descargarExcel()">Descargar Excel</button>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
